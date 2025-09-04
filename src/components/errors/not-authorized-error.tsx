@@ -9,81 +9,87 @@ import {
     CardTitle,
 } from "@/components/ui/card"
 import { useNavigate } from "react-router-dom";
-import LoadingIcon from "../loading/loading-icon";
-import { useState } from "react";
+import { motion } from "framer-motion";
+import { Shield, Home, ArrowLeft, AlertCircle } from "lucide-react";
 
-const NotAuthorizedError = ({ error, code, onClose }: any) => {
+const NotAuthorizedError = ({ error, code, onClose = () => { } }: any) => {
     const { language } = useLanguage();
     const navigate = useNavigate();
-    const [loading, setLoading] = useState(false);
-
-    const handleNavigate = (path: any) => {
-        setLoading(true);
-        const idx = window.history.state?.idx ?? 0;
-        if (idx > 0 && path === -1) {
-            navigate(-1);
-        } else {
-            navigate("/");
-        }
-        setTimeout(() => {
-             onClose();
-        }, 50);
-    }
-    
 
     return (
-        <div
-            className="h-screen w-full fixed z-50 left-0 top-0 bg-black bg-opacity-90 flex flex-col"
-        >
-            <Card
-                className="m-3 max-w-xl h-auto flex flex-col justify-content-center align-items-center m-auto"
+        <div className="min-h-screen flex items-center justify-center p-4 bg-gradient-to-br from-background via-muted/20 to-background">
+            <motion.div
+                initial={{ opacity: 0, y: 20, scale: 0.95 }}
+                animate={{ opacity: 1, y: 0, scale: 1 }}
+                transition={{ duration: 0.4, ease: "easeOut" }}
+                className="w-full max-w-md"
             >
-                <CardHeader
-                    className="w-full flex justify-content-center align-items-center m-auto"
-                >
-                    <CardTitle
-                        className="text-2xl font-bold flex justify-content-center align-items-center m-auto"
-                    >
-                        {language === 'en' ? 'You are not authorized to view this page' : 'غير مصرح لك بعرض هذه الصفحة'}
-
-                    </CardTitle>
-                </CardHeader>
-                <CardContent
-                    className="w-full flex justify-content-center align-items-center m-auto"
-                >
-                    {error}
-                </CardContent>
-                <CardFooter
-                    className="w-full flex justify-content-center align-items-center m-auto"
-                >
-                    <CardDescription
-                        className="text-lg font-medium flex justify-content-center align-items-center m-auto"
-                    >
-                    </CardDescription>
-                    <div
-                        className="flex flex-col justify-content-center align-items-center m-auto w-full gap-4"
-                    >
-                        <Button
-                            onClick={() => {
-                                handleNavigate('/')
-                            }}
-                            disabled={loading}
+                <Card className="text-center shadow-lg border-0 bg-card/80 backdrop-blur-sm">
+                    <CardHeader className="pb-6">
+                        <motion.div
+                            initial={{ scale: 0 }}
+                            animate={{ scale: 1 }}
+                            transition={{ delay: 0.2, type: "spring", stiffness: 200 }}
+                            className="mx-auto mb-4 w-16 h-16 bg-orange-500/10 rounded-full flex items-center justify-center"
                         >
-                            {loading ? <LoadingIcon /> : language === 'en' ? 'Go Home' : 'العودة للصفحة الرئيسية'}
-                        </Button>
-                        <Button
-                            onClick={() => {
-                                handleNavigate(-1)
-                            }}
-                            variant={"secondary"}
-                            disabled={loading}
-                        >
-                            {loading ? <LoadingIcon /> : language === 'en' ? 'Go Back' : 'العودة للخلف'}
-                        </Button>
-                    </div>
+                            <Shield className="w-8 h-8 text-orange-500" />
+                        </motion.div>
+                        <CardTitle className="text-2xl font-bold text-foreground">
+                            {code && <span className="text-muted-foreground text-lg">Error {code}</span>}
+                            <div className="mt-1">
+                                {language === 'en' ? 'Access Denied' : 'الوصول مرفوض'}
+                            </div>
+                        </CardTitle>
+                        <CardDescription className="text-muted-foreground mt-2">
+                            {language === 'en'
+                                ? 'You do not have permission to access this resource. Please contact an administrator if you believe this is an error.'
+                                : 'ليس لديك الإذن للوصول إلى هذا المورد. يرجى الاتصال بالمدير إذا كنت تعتقد أن هذا خطأ.'
+                            }
+                        </CardDescription>
+                    </CardHeader>
 
-                </CardFooter>
-            </Card>
+                    {error && (
+                        <CardContent className="pb-6">
+                            <div className="text-sm text-muted-foreground bg-muted/50 rounded-lg p-3 whitespace-pre-line">
+                                {error}
+                            </div>
+                        </CardContent>
+                    )}
+
+                    <CardFooter className="flex flex-col gap-3 pt-6">
+                        <motion.div
+                            initial={{ opacity: 0 }}
+                            animate={{ opacity: 1 }}
+                            transition={{ delay: 0.4 }}
+                            className="flex flex-col sm:flex-row gap-3 w-full"
+                        >
+                            <Button
+                                onClick={() => {
+                                    onClose();
+                                    navigate('/');
+                                }}
+                                className="flex-1 gap-2"
+                                size="lg"
+                            >
+                                <Home className="w-4 h-4" />
+                                {language === 'en' ? 'Go to Home' : 'الصفحة الرئيسية'}
+                            </Button>
+                            <Button
+                                variant="outline"
+                                onClick={() => {
+                                    onClose();
+                                    navigate(-1);
+                                }}
+                                className="flex-1 gap-2"
+                                size="lg"
+                            >
+                                <ArrowLeft className="w-4 h-4" />
+                                {language === 'en' ? 'Go Back' : 'رجوع'}
+                            </Button>
+                        </motion.div>
+                    </CardFooter>
+                </Card>
+            </motion.div>
         </div>
     );
 };
