@@ -23,10 +23,11 @@ const MedLevelError = ({ error, onClose, code }: any) => {
     <Alert
       className={`z-50 text-start border border-red-500 transition duration-300 ease-in-out transform ${isVisible ? "animate-fade-in-down" : "animate-fade-out-up"
         }`}
+      dir={language === "en" ? "ltr" : "rtl"}
     >
       <div className="flex justify-start items-center w-fit gap-2">
         <MdError className="text-red-500" size={20} color="red" />
-        <AlertTitle className="text-xl text-red-500">
+        <AlertTitle className="text-xl text-red-500 text-nowrap">
           {language === "en" ? "Error" : "خطأ"} {code}
         </AlertTitle>
       </div>
