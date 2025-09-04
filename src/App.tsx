@@ -14,19 +14,9 @@ function App() {
     <div className="w-screen">
       <div>
         <NotificationList />
-
+        <ErrorManager />
         <AnimatePresence mode="wait">
-          {shouldHideOutlet ? (
-            <motion.div
-              key="error"
-              initial={{ opacity: 0 }}
-              animate={{ opacity: 1 }}
-              exit={{ opacity: 0 }}
-              transition={{ duration: 0.3 }}
-            >
-              <ErrorManager />
-            </motion.div>
-          ) : (
+          {!shouldHideOutlet && (
             <motion.div
               key="outlet"
               initial={{ opacity: 0 }}
@@ -34,7 +24,6 @@ function App() {
               exit={{ opacity: 0 }}
               transition={{ duration: 0.3 }}
             >
-              <ErrorManager />
               <Outlet />
             </motion.div>
           )}
